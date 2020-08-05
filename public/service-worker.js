@@ -1,5 +1,4 @@
 const FILES_TO_CACHE = [
-    "/",
     "/db.js",
     "/index.html",
     "/index.js",
@@ -9,16 +8,16 @@ const FILES_TO_CACHE = [
     "/assets/images/icons/icon-512x512.png",
 ];
 
-const CACHE_NAME = "static-cache-v2"
+const CACHE_NAME = "static-cache-v2";
 
 const DATA_CACHE_NAME = "data-cache-v1";
 
 
 
 self.addEventListener("install", function (evt) {
-    evt.waitUntil(
-        caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/images"))
-    );
+    // evt.waitUntil(
+    //     caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/images"))
+    // );
     evt.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
     );
@@ -56,10 +55,11 @@ self.addEventListener('fetch', function (evt) {
                     .catch(err => {
                         return cache.match(evt.request);
                     });
-            }).catch(err => console.log(err))
+            })
         );
         return;
-    }
+    };
+
 
     evt.respondWith(
         caches.open(CACHE_NAME).then(cache => {
@@ -69,3 +69,7 @@ self.addEventListener('fetch', function (evt) {
         })
     );
 });
+
+self.onerror = function (errorevent) {
+    console.log(`received error message: ${errorevent.message}`);
+}
